@@ -1,5 +1,5 @@
 <div align="center">
-<img src="./public/images/logo.svg" alt="Materialize Logo" width="800" height="200">
+<img src="./public/images/logo.svg" alt="Materialize Logo" width="700" height="150">
 </div><br>
 <h1 align="center">
   Materialize (NestJS API)
