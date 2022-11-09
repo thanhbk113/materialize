@@ -50,18 +50,24 @@ export class ApiConfigService {
   }
 
   get postgresConfig(): TypeOrmModuleOptions {
+    let entities = [
+      __dirname + '/../../modules/**/*.entity{.ts,.js}',
+      __dirname + '/../../modules/**/*.view-entity{.ts,.js}',
+    ];
+    let migrations = [__dirname + '/../../database/migrations/*{.ts,.js}'];
     return {
-      autoLoadEntities: true,
-      keepConnectionAlive: !this.isTest,
-      dropSchema: this.isTest,
+      entities,
+      synchronize: true,
+      // migrations,
+      // keepConnectionAlive: !this.isTest,
+      // dropSchema: this.isTest,
       type: 'postgres',
-      name: 'default',
       host: this.getString('DB_HOST'),
       port: this.getNumber('DB_PORT'),
       username: this.getString('DB_USERNAME'),
       password: this.getString('DB_PASSWORD'),
       database: this.getString('DB_DATABASE'),
-      migrationsRun: true,
+      // migrationsRun: true,
       logging: this.getBoolean('ENABLE_ORM_LOGS'),
     };
   }
@@ -86,7 +92,9 @@ export class ApiConfigService {
     return {
       privateKey: this.getString('JWT_PRIVATE_KEY'),
       publicKey: this.getString('JWT_PUBLIC_KEY'),
-      jwtExpirationTime: this.getNumber('JWT_EXPIRATION_TIME'),
+      jwtSecret: this.getString('JWT_SECRET'),
+      jwtRefreshExpirationTime: this.getNumber('JWT_REFRESH_EXPIRATION_TIME'),
+      jwtAccessExpirationTime: this.getNumber('JWT_ACCESS_EXPIRATION_TIME'),
     };
   }
 

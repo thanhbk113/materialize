@@ -3,7 +3,6 @@ import { APP_FILTER } from '@nestjs/core';
 import { WinstonModule } from 'nest-winston';
 import { AcceptLanguageResolver, I18nModule, QueryResolver } from 'nestjs-i18n';
 import * as path from 'path';
-import { AppService } from './app.service';
 import { I18nExceptionFilterPipe } from './common/pipe/i18n-exception-filter.pipe';
 import winstonConfig from 'src/config/winston';
 import { AuthModule } from './modules/auth/auth.module';
@@ -41,7 +40,6 @@ import { ConfigModule } from '@nestjs/config';
     UserModule,
   ],
   providers: [
-    AppService,
     {
       provide: APP_FILTER,
       useClass: I18nExceptionFilterPipe,

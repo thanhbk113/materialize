@@ -5,12 +5,10 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  UploadedFile,
-  Version,
 } from '@nestjs/common';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
-import { Auth, AuthUser } from '../../decorators';
+import { AuthUser } from '../../decorators';
 import { UserDto } from '../user/dtos/user.dto';
 import { UserEntity } from '../user/user.entity';
 import { UserService } from '../user/user.service';
@@ -36,10 +34,8 @@ export class AuthController {
   async login(@Body() userLoginDto: UserLoginDto): Promise<LoginPayloadDto> {
     const userEntity = await this.authService.login(userLoginDto);
 
-    const token = await this.authService.createAccessToken({
-      userId: userEntity.id,
-    });
-    return new LoginPayloadDto({ ...userEntity }, token);
+    const token = await this.authService.generateAuthToken(userEntity);
+    return new LoginPayloadDto(userEntity.toDto(), token);
   }
 
   @Post('register')

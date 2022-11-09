@@ -22,13 +22,58 @@ export class AuthService {
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) {}
 
-  async createAccessToken(data: { userId: string }): Promise<TokenPayloadDto> {
-    return new TokenPayloadDto({
-      expiresIn: this.configService.authConfig.jwtExpirationTime,
-      accessToken: await this.jwtService.signAsync({
-        userId: data.userId,
-        type: TokenType.ACCESS_TOKEN,
-      }),
+  // async createAccessToken(data: { userId: string }): Promise<TokenPayloadDto> {
+  //   return new TokenPayloadDto({
+  //     expiresIn: this.configService.authConfig.jwtExpirationTime,
+  //     accessToken: await this.jwtService.signAsync({
+  //       userId: data.userId,
+  //       type: TokenType.ACCESS_TOKEN,
+  //     }),
+  //   });
+  // }
+
+  async generateAuthToken(user: UserEntity): Promise<TokenPayloadDto> {
+    const access_token = this.generateToken(
+      user.id,
+      TokenType.ACCESS_TOKEN,
+      this.configService.authConfig.jwtAccessExpirationTime,
+    );
+
+    const refresh_token = this.generateToken(
+      user.id,
+      TokenType.REFRESH_TOKEN,
+      0,
+    );
+    // await this.saveToken(refresh_token, user, TokenType.RefreshToken);
+    return {
+      access_token,
+      refresh_token,
+      expiresIn: this.configService.authConfig.jwtAccessExpirationTime,
+    };
+  }
+
+  // async saveToken(token: string, user: UserEntity, tokenType: TokenType) {
+  //   let tokenDoc = await this.tokenRepo.findOne({
+  //     where: { user, type: tokenType },
+  //   });
+  //   if (tokenDoc) {
+  //     tokenDoc.token = token;
+  //     tokenDoc.active = true;
+  //   } else {
+  //     tokenDoc = this.tokenRepo.create({
+  //       token,
+  //       user,
+  //       type: tokenType,
+  //     });
+  //   }
+  //   return this.tokenRepo.save(tokenDoc);
+  // }
+
+  generateToken(userId: string, type: string, expiresIn: number) {
+    const payload = { sub: userId, type };
+    return this.jwtService.sign(payload, {
+      expiresIn: expiresIn,
+      secret: this.configService.authConfig.jwtSecret,
     });
   }
 
@@ -50,9 +95,8 @@ export class AuthService {
       if (!isPasswordValid) {
         throw new Error("Password doesn't match");
       }
-      return user!;
+      return user;
     } catch (error) {
-      this.logger.error(error);
       throw new CustomHttpException({
         statusCode: HttpStatus.UNAUTHORIZED,
         code: StatusCodesList.EmailOrPasswordIncorrect,

@@ -59,13 +59,14 @@ export class UserService {
     return queryBuilder.getOne();
   }
 
-  @Transactional()
+  // @Transactional()
   async createUser(
     userRegisterDto: UserRegisterDto,
     file?: IFile,
   ): Promise<UserEntity> {
     const user = this.userRepository.create(userRegisterDto);
 
+    const userRecord = await this.userRepository.save(user);
     // if (file && !this.validatorService.isImage(file.mimetype)) {
     //   throw new FileNotImageException();
     // }
@@ -73,13 +74,12 @@ export class UserService {
     // if (file) {
     //   user.avatar = await this.awsS3Service.uploadImage(file);
     // }
-
-    await this.userRepository.save(user);
-
-    user.settings = await this.userSettingRepository.save({
-      user,
+    const userSettings = this.userSettingRepository.create({
       isEmailVerified: false,
+      userId: userRecord.id,
     });
+
+    user.settings = await this.userSettingRepository.save(userSettings);
 
     return user;
   }

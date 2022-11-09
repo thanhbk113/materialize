@@ -5,10 +5,18 @@ export class TokenPayloadDto {
   expiresIn: number;
 
   @ApiProperty()
-  accessToken: string;
+  access_token: string;
 
-  constructor(data: { expiresIn: number; accessToken: string }) {
+  @ApiProperty()
+  refresh_token: string;
+
+  constructor(data: {
+    expiresIn: number;
+    accessToken: string;
+    refreshToken: string;
+  }) {
     this.expiresIn = data.expiresIn;
-    this.accessToken = data.accessToken;
+    this.access_token = data.accessToken;
+    this.refresh_token = data.refreshToken;
   }
 }

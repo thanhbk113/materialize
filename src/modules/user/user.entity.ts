@@ -1,3 +1,4 @@
+import { Exclude } from 'class-transformer';
 import { Column, Entity, OneToMany, OneToOne, BeforeInsert } from 'typeorm';
 import { BaseEntity } from '../../common/abstract.entity';
 import { generateHash } from '../../common/utils';
@@ -7,17 +8,14 @@ import { UserSettingsEntity } from './user-settings.entity';
 
 @Entity({ name: 'users' })
 export class UserEntity extends BaseEntity {
-  @Column({ nullable: true })
-  firstName?: string;
+  @Column({ unique: true })
+  username: string;
+
+  @Column({ unique: true })
+  email: string;
 
   @Column({ nullable: true })
-  lastName?: string;
-
-  @Column({ unique: true, nullable: true })
-  email?: string;
-
-  @Column({ nullable: true })
-  password?: string;
+  password: string;
 
   @Column({ nullable: true })
   phone?: string;
@@ -34,5 +32,13 @@ export class UserEntity extends BaseEntity {
   @BeforeInsert()
   hashPassword() {
     this.password = generateHash(this.password);
+  }
+
+  toDto(): UserDto {
+    delete this.password;
+    return {
+      ...this,
+      fullName: this.fullName,
+    };
   }
 }

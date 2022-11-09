@@ -12,17 +12,17 @@ import { Column } from 'typeorm';
 import { Trim } from '../../../decorators/transform.decorators';
 
 export class UserRegisterDto {
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  @Trim()
-  readonly firstName: string;
+  // @ApiProperty()
+  // @IsString()
+  // @IsNotEmpty()
+  // @Trim()
+  // readonly firstName: string;
 
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
   @Trim()
-  readonly lastName: string;
+  readonly username: string;
 
   @ApiProperty()
   @IsString()
