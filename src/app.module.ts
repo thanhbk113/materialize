@@ -11,6 +11,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { SharedModule } from './shared/services/shared.module';
 import { ApiConfigService } from './shared/services/api-config.service';
 import { ConfigModule } from '@nestjs/config';
+import { CategoryModule } from './modules/category/category.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { ConfigModule } from '@nestjs/config';
     WinstonModule.forRoot(winstonConfig),
     AuthModule,
     UserModule,
+    CategoryModule,
   ],
   providers: [
     {
