@@ -1,6 +1,7 @@
 import { Exclude } from 'class-transformer';
 import { Column, Entity, OneToMany, OneToOne, BeforeInsert } from 'typeorm';
 import { BaseEntity } from '../../common/abstract.entity';
+import { UserRole } from '../../common/enum/user-role';
 import { generateHash } from '../../common/utils';
 import { VirtualColumn } from '../../decorators';
 import { UserDto } from './dtos/user.dto';
@@ -22,6 +23,10 @@ export class UserEntity extends BaseEntity {
 
   @Column({ nullable: true })
   avatar?: string;
+
+  // TODO: Next use rbac
+  @Column({ enum: UserRole })
+  role: UserRole;
 
   @VirtualColumn()
   fullName?: string;
