@@ -6,11 +6,18 @@ export class PageDto<T> {
   @ApiProperty({ isArray: true })
   readonly data: T[];
 
+  readonly message: string;
+
   @ApiProperty()
   readonly meta: PageMetaDto;
 
-  constructor(data: T[], meta: PageMetaDto) {
+  constructor(data: T[], meta: PageMetaDto, message?: string) {
     this.data = data;
     this.meta = meta;
+    this.message = message ? message : 'Success';
   }
+}
+
+export class BaseResponseDto {
+  readonly message: string;
 }

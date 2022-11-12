@@ -2,14 +2,16 @@ import {
   EnumFieldOptional,
   NumberFieldOptional,
   StringFieldOptional,
-} from '../../decorators';
-import { Order } from '../constants/order';
+} from "../../decorators";
+import { OrderType } from "../enum/order";
 
 export class PageOptionsDto {
-  @EnumFieldOptional(() => Order, {
-    default: Order.ASC,
+  readonly sort?: string;
+
+  @EnumFieldOptional(() => OrderType, {
+    default: OrderType.ASC,
   })
-  readonly order: Order = Order.ASC;
+  readonly order: OrderType = OrderType.ASC;
 
   @NumberFieldOptional({
     minimum: 1,

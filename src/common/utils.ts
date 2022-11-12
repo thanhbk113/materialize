@@ -1,5 +1,8 @@
-import * as bcrypt from 'bcrypt';
-import { SelectQueryBuilder } from 'typeorm';
+import * as bcrypt from "bcrypt";
+import { SelectQueryBuilder } from "typeorm";
+import { OrderType } from "./enum/order";
+import { PageMetaDto } from "./dto/page-meta.dto";
+import { PageOptionsDto } from "./dto/page-options.dto";
 
 /**
  * generate hash from password or string
@@ -27,16 +30,19 @@ export function validateHash(
   return bcrypt.compare(password, hash);
 }
 
-export function queryPagination<T>(args: {
+export async function queryPagination<T>({
+  query,
+  o,
+}: {
   query: SelectQueryBuilder<T>;
-  page: number;
-  take: number;
-  order: string;
+  o: PageOptionsDto;
 }): Promise<[T[], number]> {
-  return args.query
-    .take(args.take)
-    .skip(args.page)
-    .orderBy(args.order)
+  console.log("queryPagination", o);
+
+  return query
+    .take(o.take)
+    .skip(o.page)
+    .orderBy(`${query.alias}.${o.sort}`, o.order)
     .getManyAndCount();
 }
 

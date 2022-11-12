@@ -1,4 +1,5 @@
-import { CategoryStatus } from '../../../common/enum/category-status';
+import { BaseDto } from "../../../common/abstract.dto";
+import { CategoryStatus } from "../../../common/enum/category-status";
 
 export class CategoryDto {
   id: string;
@@ -18,7 +19,7 @@ export class CreateParentCategoryDto {
   slug: string;
   status?: CategoryStatus;
 }
-export class CreateChildCategoryDto {
+export class CreateChildCategoryDto extends BaseDto {
   image?: string;
   name: string;
   description?: string;

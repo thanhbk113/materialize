@@ -1,9 +1,9 @@
-import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
-import { Logger } from 'winston';
 import { StatusCodesList } from '../../common/constants/status-codes-list.constants';
 import { TokenType } from '../../common/constants/token-type';
+import { Platform } from '../../common/enum/platform';
+import { UserRole } from '../../common/enum/user-role';
 import { CustomHttpException } from '../../common/exception/custom-http.exception';
 import { validateHash } from '../../common/utils';
 import { ApiConfigService } from '../../shared/services/api-config.service';
@@ -15,11 +15,11 @@ import type { UserLoginDto } from './dto/UserLoginDto';
 
 @Injectable()
 export class AuthService {
+  private readonly logger: Logger = new Logger(AuthService.name);
   constructor(
     private jwtService: JwtService,
     private configService: ApiConfigService,
     private userService: UserService,
-    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) {}
 
   // async createAccessToken(data: { userId: string }): Promise<TokenPayloadDto> {
@@ -78,9 +78,14 @@ export class AuthService {
   }
 
   async login(userLoginDto: UserLoginDto): Promise<UserEntity> {
+    const role =
+      userLoginDto.requestFrom === Platform.CMS
+        ? UserRole.ADMINSTRATOR
+        : UserRole.USER;
     try {
       const user = await this.userService.findOne({
         email: userLoginDto.email,
+        role,
       });
 
       if (!user) {
@@ -97,11 +102,11 @@ export class AuthService {
       }
       return user;
     } catch (error) {
+      this.logger.error(error);
       throw new CustomHttpException({
         statusCode: HttpStatus.UNAUTHORIZED,
         code: StatusCodesList.EmailOrPasswordIncorrect,
-        // error: "User doesn't exist",
-        message: "User doesn't exist1",
+        message: error.message,
       });
     }
   }

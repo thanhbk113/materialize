@@ -2,22 +2,22 @@ import {
   Inject,
   Injectable,
   InternalServerErrorException,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import type { FindOptionsWhere } from 'typeorm';
-import { Repository } from 'typeorm';
+} from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import type { FindOptionsWhere } from "typeorm";
+import { Repository } from "typeorm";
 
 import type {
   CategoryDto,
   CreateChildCategoryDto,
   CreateParentCategoryDto,
   UpdateCategoryDto,
-} from './dtos/category.dto';
-import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
-import { Logger } from 'winston';
-import { CategoryEntity } from './category.entity';
-import { PageDto } from '../../common/dto/page.dto';
-import { PageMetaDto } from '../../common/dto/page-meta.dto';
+} from "./dtos/category.dto";
+import { WINSTON_MODULE_PROVIDER } from "nest-winston";
+import { Logger } from "winston";
+import { CategoryEntity } from "./category.entity";
+import { PageDto } from "../../common/dto/page.dto";
+import { PageMetaDto } from "../../common/dto/page-meta.dto";
 
 @Injectable()
 export class CategoryService {
@@ -29,7 +29,7 @@ export class CategoryService {
 
   async getCategories(): Promise<PageDto<CategoryDto>> {
     const [categories, total] = await this.catRepository.findAndCount({
-      relations: ['children'],
+      relations: ["children"],
     });
     const pageMetaDto = new PageMetaDto({ itemCount: total });
     return new PageDto<CategoryDto>(categories, pageMetaDto);

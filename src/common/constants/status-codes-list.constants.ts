@@ -19,4 +19,5 @@ export const StatusCodesList = {
   DeleteDefaultError: 1018,
   RefreshTokenExpired: 1019,
   EmailOrPasswordIncorrect: 1020,
+  EmailAlreadyExists: 1021,
 } as const;

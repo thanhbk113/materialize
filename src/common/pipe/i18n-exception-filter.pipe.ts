@@ -5,23 +5,21 @@ import {
   HttpException,
   HttpStatus,
   Inject,
-} from '@nestjs/common';
-import { I18nService } from 'nestjs-i18n';
-import * as _ from 'lodash';
-import { ValidationErrorInterface } from 'src/common/interfaces/validation-error.interface';
-import { StatusCodesList } from 'src/common/constants/status-codes-list.constants';
-import { Logger } from 'winston';
-import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
-import { CustomHttpExceptionResponse } from '../exception/custom-http.exception';
-import { ExceptionTitleList } from '../constants/exception-title-list.constants';
-import { Response } from 'express';
+  Logger,
+} from "@nestjs/common";
+import { I18nService } from "nestjs-i18n";
+import * as _ from "lodash";
+import { ValidationErrorInterface } from "src/common/interfaces/validation-error.interface";
+import { StatusCodesList } from "src/common/constants/status-codes-list.constants";
+import { CustomHttpExceptionResponse } from "../exception/custom-http.exception";
+import { ExceptionTitleList } from "../constants/exception-title-list.constants";
+import { Response } from "express";
 
 @Catch(HttpException)
 export class I18nExceptionFilterPipe implements ExceptionFilter {
-  constructor(
-    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
-    private readonly i18n: I18nService,
-  ) {}
+  private readonly logger: Logger = new Logger(I18nExceptionFilterPipe.name);
+
+  constructor(private readonly i18n: I18nService) {}
 
   async catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
@@ -30,16 +28,17 @@ export class I18nExceptionFilterPipe implements ExceptionFilter {
     const r = await this.getResponse(
       request.url,
       exception,
-      ctx.getRequest().i18nLang || ctx.getRequest().headers['x-custom-lang'],
+      ctx.getRequest().i18nLang || ctx.getRequest().headers["x-custom-lang"],
     );
 
-    this.logger.error(ctx.getResponse());
-
+    if (r.statusCode !== HttpStatus.NOT_FOUND) {
+      this.logger.error(exception.getResponse(), exception.stack);
+    }
     return response.status(exception.getStatus()).json(r);
   }
 
   getExceptionTitle(code: number): string {
-    const keyCode = _.findKey(StatusCodesList, (value) => value === code);
+    const keyCode = _.findKey(StatusCodesList, value => value === code);
     if (!keyCode) {
       return ExceptionTitleList.InternalServerError;
     }
@@ -72,7 +71,7 @@ export class I18nExceptionFilterPipe implements ExceptionFilter {
         },
       });
     } catch (error) {
-      this.logger.error('Error in I18nExceptionFilterPipe: ', {
+      this.logger.error("Error in I18nExceptionFilterPipe: ", {
         meta: {
           error,
         },
@@ -85,7 +84,7 @@ export class I18nExceptionFilterPipe implements ExceptionFilter {
     argument: Record<string, any>;
   } {
     try {
-      const splitObject = message.split('-');
+      const splitObject = message.split("-");
       if (!splitObject[1]) {
         return {
           title: splitObject[0],
@@ -108,13 +107,13 @@ export class I18nExceptionFilterPipe implements ExceptionFilter {
     const validationData: Array<ValidationErrorInterface> = [];
     for (let i = 0; i < errors.length; i++) {
       const constraintsValidator = [
-        'validate',
-        'isEqualTo',
-        'isIn',
-        'matches',
-        'maxLength',
-        'minLength',
-        'isLength',
+        "validate",
+        "isEqualTo",
+        "isIn",
+        "matches",
+        "maxLength",
+        "minLength",
+        "isLength",
       ];
       const item = errors[i];
       let message = [];

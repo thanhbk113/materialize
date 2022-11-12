@@ -1,13 +1,12 @@
-import { Exclude } from 'class-transformer';
-import { Column, Entity, OneToMany, OneToOne, BeforeInsert } from 'typeorm';
-import { BaseEntity } from '../../common/abstract.entity';
-import { UserRole } from '../../common/enum/user-role';
-import { generateHash } from '../../common/utils';
-import { VirtualColumn } from '../../decorators';
-import { UserDto } from './dtos/user.dto';
-import { UserSettingsEntity } from './user-settings.entity';
+import { Column, Entity, OneToOne, BeforeInsert } from "typeorm";
+import { BaseEntity } from "../../common/abstract.entity";
+import { UserRole } from "../../common/enum/user-role";
+import { generateHash } from "../../common/utils";
+import { VirtualColumn } from "../../decorators";
+import { UserDto } from "./dtos/user.dto";
+import { UserSettingsEntity } from "./user-settings.entity";
 
-@Entity({ name: 'users' })
+@Entity({ name: "users" })
 export class UserEntity extends BaseEntity {
   @Column({ unique: true })
   username: string;
@@ -25,13 +24,13 @@ export class UserEntity extends BaseEntity {
   avatar?: string;
 
   // TODO: Next use rbac
-  @Column({ enum: UserRole })
+  @Column({ enum: UserRole, default: UserRole.ADMINSTRATOR })
   role: UserRole;
 
   @VirtualColumn()
   fullName?: string;
 
-  @OneToOne(() => UserSettingsEntity, (userSettings) => userSettings.user)
+  @OneToOne(() => UserSettingsEntity, userSettings => userSettings.user)
   settings?: UserSettingsEntity;
 
   @BeforeInsert()

@@ -1,15 +1,39 @@
-import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from "@nestjs/common";
+import { NestFactory } from "@nestjs/core";
+import helmet from "helmet";
+import * as morgan from "morgan";
+import rateLimit from "express-rate-limit";
+import * as compression from "compression";
+
 import {
   initializeTransactionalContext,
   patchTypeORMRepositoryWithBaseRepository,
-} from 'typeorm-transactional-cls-hooked';
-import { AppModule } from './app.module';
+} from "typeorm-transactional-cls-hooked";
+import { AppModule } from "./app.module";
+import { SharedModule } from "./shared/services/shared.module";
+import { ApiConfigService } from "./shared/services/api-config.service";
 
 async function bootstrap() {
   // initializeTransactionalContext();
   // patchTypeORMRepositoryWithBaseRepository();
 
-  const app = await NestFactory.create(AppModule);
-  await app.listen(3000);
+  const app = await NestFactory.create(AppModule, { cors: true });
+  app.use(helmet());
+  app.setGlobalPrefix("/api");
+  // app.use(
+  //   rateLimit({
+  //     windowMs: 15 * 60 * 1000,
+  //     max: 100,
+  //   }),
+  // );
+  app.useGlobalPipes(new ValidationPipe());
+  app.use(compression());
+
+  const configService = app.select(SharedModule).get(ApiConfigService);
+
+  const port = configService.appConfig.port;
+
+  await app.listen(port);
+  console.info(`Server running on port ${port} 👍`);
 }
 bootstrap();

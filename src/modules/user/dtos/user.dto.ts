@@ -1,4 +1,6 @@
-export class UserDto {
+import { BaseDto } from "../../../common/abstract.dto";
+
+export class UserDto extends BaseDto {
   firstName?: string;
 
   lastName?: string;
