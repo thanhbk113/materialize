@@ -5,6 +5,7 @@
   Materialize (NestJS API)
 </h1>
 <p align="center"> This repository is Backend API part of Materialize written in NestJS. For Frontend please visit XXXX. This project includes API for Authentication, User Management, Role Management, Permission Management, Email Module, Account Settings, Localization, and many more. </p>
+
 ## Table of Contents
 
 - [Getting Started](#getting-started)
