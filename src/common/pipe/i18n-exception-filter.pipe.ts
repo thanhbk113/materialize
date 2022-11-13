@@ -31,16 +31,13 @@ export class I18nExceptionFilterPipe implements ExceptionFilter {
       ctx.getRequest().i18nLang || ctx.getRequest().headers["x-custom-lang"],
     );
 
-    if (r.statusCode !== HttpStatus.NOT_FOUND) {
-      this.logger.error(exception.getResponse(), exception.stack);
-    }
-    return response.status(exception.getStatus()).json(r);
+    response.status(exception.getStatus()).json(r);
   }
 
   getExceptionTitle(code: number): string {
-    const keyCode = _.findKey(StatusCodesList, value => value === code);
+    let keyCode = _.findKey(StatusCodesList, value => value === code);
     if (!keyCode) {
-      return ExceptionTitleList.InternalServerError;
+      keyCode = ExceptionTitleList.InternalServerError;
     }
     return `exception.${ExceptionTitleList[keyCode]}`;
   }

@@ -13,7 +13,6 @@ import { ApiConfigService } from "./shared/services/api-config.service";
 import { ConfigModule } from "@nestjs/config";
 import { CategoryModule } from "./modules/category/category.module";
 import { HealthModule } from "./modules/health/health.module";
-import { AppLoggerMiddleware } from "./middleware/logger";
 
 @Module({
   imports: [
@@ -51,8 +50,4 @@ import { AppLoggerMiddleware } from "./middleware/logger";
     },
   ],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(AppLoggerMiddleware).forRoutes("*");
-  }
-}
+export class AppModule {}

@@ -1,17 +1,17 @@
-import { HttpStatus, Injectable, Logger } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { StatusCodesList } from '../../common/constants/status-codes-list.constants';
-import { TokenType } from '../../common/constants/token-type';
-import { Platform } from '../../common/enum/platform';
-import { UserRole } from '../../common/enum/user-role';
-import { CustomHttpException } from '../../common/exception/custom-http.exception';
-import { validateHash } from '../../common/utils';
-import { ApiConfigService } from '../../shared/services/api-config.service';
+import { HttpStatus, Injectable, Logger } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { StatusCodesList } from "../../common/constants/status-codes-list.constants";
+import { TokenType } from "../../common/constants/token-type";
+import { Platform } from "../../common/enum/platform";
+import { UserRole } from "../../common/enum/user-role";
+import { CustomHttpException } from "../../common/exception/custom-http.exception";
+import { validateHash } from "../../common/utils";
+import { ApiConfigService } from "../../shared/services/api-config.service";
 
-import type { UserEntity } from '../user/user.entity';
-import { UserService } from '../user/user.service';
-import { TokenPayloadDto } from './dto/TokenPayloadDto';
-import type { UserLoginDto } from './dto/UserLoginDto';
+import type { UserEntity } from "../user/user.entity";
+import { UserService } from "../user/user.service";
+import { TokenPayloadDto } from "./dto/TokenPayloadDto";
+import type { UserLoginDto } from "./dto/UserLoginDto";
 
 @Injectable()
 export class AuthService {
@@ -89,9 +89,8 @@ export class AuthService {
       });
 
       if (!user) {
-        throw new Error('User not found');
+        throw new Error("User not found");
       }
-
       const isPasswordValid = await validateHash(
         userLoginDto.password,
         user.password,
