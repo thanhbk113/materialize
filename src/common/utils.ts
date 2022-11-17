@@ -37,11 +37,9 @@ export async function queryPagination<T>({
   query: SelectQueryBuilder<T>;
   o: PageOptionsDto;
 }): Promise<[T[], number]> {
-  console.log("queryPagination", o);
-
   return query
     .take(o.take)
-    .skip(o.page)
+    .skip(o.skip)
     .orderBy(`${query.alias}.${o.sort}`, o.order)
     .getManyAndCount();
 }

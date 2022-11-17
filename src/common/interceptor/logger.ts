@@ -7,7 +7,14 @@ import {
 } from "@nestjs/common";
 import { stringify } from "querystring";
 import { throwError } from "rxjs";
-import { tap, catchError, mergeMap, finalize } from "rxjs/operators";
+import {
+  tap,
+  catchError,
+  mergeMap,
+  finalize,
+  map,
+  combineLatestAll,
+} from "rxjs/operators";
 
 @Injectable()
 export class HTTPLogger implements NestInterceptor {
@@ -21,7 +28,6 @@ export class HTTPLogger implements NestInterceptor {
     const { originalUrl, method, ip } = request;
 
     const userAgent = request.get("user-agent") || "";
-
     let d;
     return next.handle().pipe(
       catchError(err => {
@@ -42,7 +48,6 @@ export class HTTPLogger implements NestInterceptor {
           const { statusCode } = response;
           const duration = Date.now() - start;
           const contentLength = response.get("content-length");
-
           log(
             `Request: {${method} ${originalUrl} ${statusCode} ${contentLength} - ${userAgent} ${ip} Response: { ${JSON.stringify(
               d,

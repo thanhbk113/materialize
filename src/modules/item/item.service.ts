@@ -4,6 +4,7 @@ import { Repository } from "typeorm";
 import { PageMetaDto } from "../../common/dto/page-meta.dto";
 import { PageOptionsDto } from "../../common/dto/page-options.dto";
 import { PageDto } from "../../common/dto/page.dto";
+import { queryPagination } from "../../common/utils";
 import {
   CreateItemDto,
   ItemDto,
@@ -22,9 +23,15 @@ export class ItemService {
   ) {}
 
   async search(pageOptionsDto: PageOptionsDto): Promise<PageDto<ItemDto>> {
-    const [items, itemCount] = await this.itemRepository.findAndCount();
+    const qb = this.itemRepository.createQueryBuilder("item");
 
-    return items.toPageDto(
+    const [items, itemCount] = await queryPagination<ItemEntity>({
+      query: qb,
+      o: pageOptionsDto,
+    });
+
+    return new PageDto<ItemEntity>(
+      items,
       new PageMetaDto({
         itemCount,
         pageOptionsDto,

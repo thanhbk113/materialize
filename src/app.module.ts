@@ -13,6 +13,8 @@ import { ApiConfigService } from "./shared/services/api-config.service";
 import { ConfigModule } from "@nestjs/config";
 import { CategoryModule } from "./modules/category/category.module";
 import { HealthModule } from "./modules/health/health.module";
+import { ItemModule } from "./modules/item/item.module";
+import { CartModule } from "./modules/cart/cart.module";
 
 @Module({
   imports: [
@@ -40,6 +42,8 @@ import { HealthModule } from "./modules/health/health.module";
     WinstonModule.forRoot(winstonConfig),
     AuthModule,
     UserModule,
+    ItemModule,
+    CartModule,
     CategoryModule,
     HealthModule,
   ],

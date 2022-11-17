@@ -10,6 +10,9 @@ export class ItemEntity extends BaseEntity {
   @Column()
   description: string;
 
+  @Column({ default: 1 })
+  quantity: number;
+
   @Column()
   price: number;
 

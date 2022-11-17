@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Inject,
   Injectable,
   InternalServerErrorException,
@@ -49,9 +50,7 @@ export class CategoryService {
     const { id, ...updateCategory } = category;
     const { affected } = await this.catRepository.update(id, updateCategory);
     if (affected === 0) {
-      throw new InternalServerErrorException(
-        `Category with id ${id} not found`,
-      );
+      throw new BadRequestException(`Category with id ${id} not found`);
     }
     return this.catRepository.findOne({ where: { id } });
   }

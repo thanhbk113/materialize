@@ -1,12 +1,13 @@
 import {
   EnumFieldOptional,
   NumberFieldOptional,
+  StringField,
   StringFieldOptional,
 } from "../../decorators";
 import { OrderType } from "../enum/order";
 
 export class PageOptionsDto {
-  readonly sort?: string;
+  readonly sort?: string = "created_at";
 
   @EnumFieldOptional(() => OrderType, {
     default: OrderType.ASC,
