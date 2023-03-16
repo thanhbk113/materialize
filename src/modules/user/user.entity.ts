@@ -9,7 +9,7 @@ import { UserSettingsEntity } from "./user-settings.entity";
 
 @Entity({ name: "users" })
 export class UserEntity extends BaseEntity {
-  @Column({ unique: true })
+  @Column()
   username: string;
 
   @Column({ unique: true })
