@@ -27,7 +27,6 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     cors: true,
   });
-  app.use(helmet());
   app.setGlobalPrefix("/api");
   // app.use(
   //   rateLimit({
@@ -35,6 +34,12 @@ async function bootstrap() {
   //     max: 100,
   //   }),
   // );
+  app.use(compression());
+
+  app.useGlobalInterceptors(
+    new ClassSerializerInterceptor(app.get(Reflector)),
+    new HTTPLogger(),
+  );
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -44,17 +49,12 @@ async function bootstrap() {
       exceptionFactory: errors => new UnprocessableEntityException(errors),
     }),
   );
-  app.useGlobalInterceptors(
-    new ClassSerializerInterceptor(app.get(Reflector)),
-    new HTTPLogger(),
-  );
-  app.use(compression());
 
   const configService = app.select(SharedModule).get(ApiConfigService);
 
   const port = configService.appConfig.port;
 
-  await app.listen(port, "0.0.0.0");
+  await app.listen(port);
   console.info(`Server running on port ${port} 👍`);
 }
 bootstrap();
