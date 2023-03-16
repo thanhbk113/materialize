@@ -1,13 +1,4 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Post,
-} from "@nestjs/common";
-import { ApiOkResponse } from "@nestjs/swagger";
-import { BaseResponseDto } from "../../common/abstract.dto";
+import { Body, Controller, Get, Post } from "@nestjs/common";
 import { BaseResponse, SimpleResponse } from "../../common/dto/page.dto";
 
 import { AuthUser } from "../../decorators";
@@ -27,11 +18,6 @@ export class AuthController {
   ) {}
 
   @Post("/login")
-  @HttpCode(HttpStatus.OK)
-  @ApiOkResponse({
-    type: LoginPayloadDto,
-    description: "User info with access token",
-  })
   async login(
     @Body() userLoginDto: UserLoginDto,
   ): Promise<SimpleResponse<LoginPayloadDto>> {
@@ -45,7 +31,6 @@ export class AuthController {
   }
 
   @Post("/register")
-  @HttpCode(HttpStatus.OK)
   async register(
     @Body() userRegisterDto: UserRegisterDto,
   ): Promise<SimpleResponse<void>> {
@@ -55,9 +40,7 @@ export class AuthController {
   }
 
   @Get("/me")
-  @HttpCode(HttpStatus.OK)
   // @Auth([RoleType.USER, RoleType.ADMIN])
-  @ApiOkResponse({ type: UserDto, description: "current user info" })
   getCurrentUser(@AuthUser() user: UserEntity): SimpleResponse<UserDto> {
     return new SimpleResponse(user.toDto(), "User info");
   }

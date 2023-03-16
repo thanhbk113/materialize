@@ -18,7 +18,7 @@ async function bootstrap() {
   // initializeTransactionalContext();
   // patchTypeORMRepositoryWithBaseRepository();
 
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const app = await NestFactory.create(AppModule);
   app.use(helmet());
   app.setGlobalPrefix("/api");
   app.enableCors();
