@@ -18,17 +18,17 @@ import { CartModule } from "./modules/cart/cart.module";
 
 @Module({
   imports: [
-    I18nModule.forRoot({
-      fallbackLanguage: "en",
-      loaderOptions: {
-        path: path.join(__dirname, "/i18n/"),
-        watch: true,
-      },
-      resolvers: [
-        { use: QueryResolver, options: ["lang"] },
-        AcceptLanguageResolver,
-      ],
-    }),
+    // I18nModule.forRoot({
+    //   fallbackLanguage: "en",
+    //   loaderOptions: {
+    //     path: path.join(__dirname, "/i18n/"),
+    //     watch: true,
+    //   },
+    //   resolvers: [
+    //     { use: QueryResolver, options: ["lang"] },
+    //     AcceptLanguageResolver,
+    //   ],
+    // }),
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ".env",
@@ -47,11 +47,11 @@ import { CartModule } from "./modules/cart/cart.module";
     CategoryModule,
     HealthModule,
   ],
-  providers: [
-    {
-      provide: APP_FILTER,
-      useClass: I18nExceptionFilterPipe,
-    },
-  ],
+  // providers: [
+  //   {
+  //     provide: APP_FILTER,
+  //     useClass: I18nExceptionFilterPipe,
+  //   },
+  // ],
 })
 export class AppModule {}
