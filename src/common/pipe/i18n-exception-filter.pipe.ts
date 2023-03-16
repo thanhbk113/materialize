@@ -51,6 +51,8 @@ export class I18nExceptionFilterPipe implements ExceptionFilter {
     const exceptionResponse =
       exception.getResponse() as CustomHttpExceptionResponse;
 
+    this.logger.debug("getResponse", { meta: { exceptionResponse } });
+
     const title = this.getExceptionTitle(exceptionResponse.code);
 
     return {
