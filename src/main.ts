@@ -24,11 +24,11 @@ async function bootstrap() {
   // initializeTransactionalContext();
   // patchTypeORMRepositoryWithBaseRepository();
 
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  app.set("trust proxy", 1);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    cors: true,
+  });
   app.use(helmet());
   app.setGlobalPrefix("/api");
-  app.enableCors();
   // app.use(
   //   rateLimit({
   //     windowMs: 15 * 60 * 1000,
