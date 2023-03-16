@@ -19,7 +19,7 @@ import { LoginPayloadDto } from "./dto/LoginPayloadDto";
 import { UserLoginDto } from "./dto/UserLoginDto";
 import { UserRegisterDto } from "./dto/UserRegisterDto";
 
-@Controller("auth")
+@Controller("/auth")
 export class AuthController {
   constructor(
     private userService: UserService,
