@@ -26,7 +26,7 @@ export class AuthController {
     private authService: AuthService,
   ) {}
 
-  @Post("login")
+  @Post("/login")
   @HttpCode(HttpStatus.OK)
   @ApiOkResponse({
     type: LoginPayloadDto,
@@ -44,7 +44,7 @@ export class AuthController {
     );
   }
 
-  @Post("register")
+  @Post("/register")
   @HttpCode(HttpStatus.OK)
   async register(
     @Body() userRegisterDto: UserRegisterDto,
