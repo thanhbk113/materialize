@@ -1,4 +1,9 @@
-import { ClassSerializerInterceptor, ValidationPipe } from "@nestjs/common";
+import {
+  ClassSerializerInterceptor,
+  HttpStatus,
+  UnprocessableEntityException,
+  ValidationPipe,
+} from "@nestjs/common";
 import { NestFactory, Reflector } from "@nestjs/core";
 import helmet from "helmet";
 import * as morgan from "morgan";
@@ -31,7 +36,14 @@ async function bootstrap() {
   //   }),
   // );
 
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
+      transform: true,
+      dismissDefaultMessages: true,
+      exceptionFactory: errors => new UnprocessableEntityException(errors),
+    }),
+  );
   app.useGlobalInterceptors(
     new ClassSerializerInterceptor(app.get(Reflector)),
     new HTTPLogger(),
