@@ -13,12 +13,14 @@ import { AppModule } from "./app.module";
 import { SharedModule } from "./shared/services/shared.module";
 import { ApiConfigService } from "./shared/services/api-config.service";
 import { HTTPLogger } from "./common/interceptor/logger";
+import { NestExpressApplication } from "@nestjs/platform-express";
 
 async function bootstrap() {
   // initializeTransactionalContext();
   // patchTypeORMRepositoryWithBaseRepository();
 
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  app.set("trust proxy", 1);
   app.use(helmet());
   app.setGlobalPrefix("/api");
   app.enableCors();

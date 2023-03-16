@@ -41,7 +41,9 @@ export class AuthController {
 
   @Get("/me")
   // @Auth([RoleType.USER, RoleType.ADMIN])
-  getCurrentUser(@AuthUser() user: UserEntity): SimpleResponse<UserDto> {
+  async getCurrentUser(
+    @AuthUser() user: UserEntity,
+  ): Promise<SimpleResponse<UserDto>> {
     return new SimpleResponse(user.toDto(), "User info");
   }
 }
