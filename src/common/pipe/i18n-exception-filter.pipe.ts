@@ -35,6 +35,7 @@ export class I18nExceptionFilterPipe implements ExceptionFilter {
   }
 
   getExceptionTitle(code: number): string {
+    this.logger.debug("getExceptionTitle", { meta: { code } });
     let keyCode = _.findKey(StatusCodesList, value => value === code);
     if (!keyCode) {
       keyCode = ExceptionTitleList.InternalServerError;
