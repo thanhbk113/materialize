@@ -1,4 +1,11 @@
-import { Column, Entity, ManyToOne, OneToOne } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToOne,
+} from "typeorm";
 import { BaseEntity } from "../../common/abstract.entity";
 import { CategoryEntity } from "../category/category.entity";
 
@@ -22,6 +29,16 @@ export class ItemEntity extends BaseEntity {
   @Column({ nullable: true, array: true, type: "varchar" })
   images: string[];
 
-  @ManyToOne(() => CategoryEntity, category => category.items)
-  category: CategoryEntity;
+  @ManyToMany(() => CategoryEntity, category => category.items)
+  @JoinTable()
+  categories: CategoryEntity[];
+
+  @Column({ default: 0 })
+  stock: number;
+
+  @Column()
+  details: string;
+
+  @Column()
+  sku: string;
 }

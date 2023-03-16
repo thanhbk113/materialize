@@ -1,3 +1,4 @@
+import { Exclude } from "class-transformer";
 import { Column, Entity, OneToOne, BeforeInsert } from "typeorm";
 import { BaseEntity } from "../../common/abstract.entity";
 import { UserRole } from "../../common/enum/user-role";
@@ -14,6 +15,7 @@ export class UserEntity extends BaseEntity {
   @Column({ unique: true })
   email: string;
 
+  @Exclude({ toPlainOnly: true })
   @Column({ nullable: true })
   password: string;
 

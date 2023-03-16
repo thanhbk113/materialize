@@ -1,4 +1,4 @@
-import { BaseDto } from "../../../common/abstract.dto";
+import { BaseRequestDto } from "../../../common/abstract.dto";
 import { CategoryStatus } from "../../../common/enum/category-status";
 
 export class CategoryDto {
@@ -19,7 +19,7 @@ export class CreateParentCategoryDto {
   slug: string;
   status?: CategoryStatus;
 }
-export class CreateChildCategoryDto extends BaseDto {
+export class CreateChildCategoryDto extends BaseRequestDto {
   image?: string;
   name: string;
   description?: string;
@@ -37,3 +37,5 @@ export class UpdateCategoryDto {
   slug: string;
   status?: CategoryStatus;
 }
+
+export class DeleteCategoryDto extends BaseRequestDto {}

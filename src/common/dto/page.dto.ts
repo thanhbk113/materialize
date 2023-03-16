@@ -1,6 +1,6 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from "@nestjs/swagger";
 
-import { PageMetaDto } from './page-meta.dto';
+import { PageMetaDto } from "./page-meta.dto";
 
 export class PageDto<T> {
   @ApiProperty({ isArray: true })
@@ -14,10 +14,22 @@ export class PageDto<T> {
   constructor(data: T[], meta: PageMetaDto, message?: string) {
     this.data = data;
     this.meta = meta;
-    this.message = message ? message : 'Success';
+    this.message = message ? message : "Success";
   }
 }
 
-export class BaseResponseDto {
+export class SimpleResponse<T> {
+  @ApiProperty()
+  readonly data: T;
+
+  readonly message: string;
+
+  constructor(data: T, message?: string) {
+    this.data = data;
+    this.message = message ? message : "Success";
+  }
+}
+
+export class BaseResponse {
   readonly message: string;
 }

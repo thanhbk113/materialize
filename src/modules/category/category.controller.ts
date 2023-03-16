@@ -1,35 +1,49 @@
-import { Body, Controller, Get, Post, Put } from '@nestjs/common';
-import { PageDto } from '../../common/dto/page.dto';
-import { CategoryEntity } from './category.entity';
-import { CategoryService } from './category.service';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+} from "@nestjs/common";
+import { PageDto } from "../../common/dto/page.dto";
+import { CategoryEntity } from "./category.entity";
+import { CategoryService } from "./category.service";
 import {
   CategoryDto,
   CreateChildCategoryDto,
   CreateParentCategoryDto,
+  DeleteCategoryDto,
   UpdateCategoryDto,
-} from './dtos/category.dto';
+} from "./dtos/category.dto";
 
-@Controller('cat')
+@Controller("cat")
 export class CategoryController {
   constructor(private categoryService: CategoryService) {}
 
-  @Get('/')
+  @Get("/")
   async getCategories(): Promise<PageDto<CategoryDto>> {
-    return this.categoryService.getCategories();
+    return await this.categoryService.getCategories();
   }
 
-  @Post('/create-parent-category')
+  @Post("/create-parent-category")
   async createCategory(@Body() request: CreateParentCategoryDto) {
-    return this.categoryService.createParentCategory(request);
+    return await this.categoryService.createParentCategory(request);
   }
 
-  @Post('/create-child-category')
+  @Post("/create-child-category")
   async createChildCategory(@Body() request: CreateChildCategoryDto) {
-    return this.categoryService.createChildCategory(request);
+    return await this.categoryService.createChildCategory(request);
   }
 
-  @Put('/update-category')
+  @Put("/update-category")
   async updateCategory(@Body() request: UpdateCategoryDto) {
-    return this.categoryService.updateCategory(request);
+    return await this.categoryService.updateCategory(request);
+  }
+
+  @Delete("/:id")
+  async deleteCategory(@Param("id") id: string) {
+    return await this.categoryService.deleteCategory(id);
   }
 }

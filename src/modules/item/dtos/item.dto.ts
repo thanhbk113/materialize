@@ -1,49 +1,39 @@
-import { BaseDto } from "../../../common/abstract.dto";
-import { BaseResponseDto } from "../../../common/dto/page.dto";
+import { BaseRequestDto, BaseResponseDto } from "../../../common/abstract.dto";
+import { BaseResponse } from "../../../common/dto/page.dto";
 import { CategoryDto } from "../../category/dtos/category.dto";
 
-export class ItemDto extends BaseDto {
+export class ItemResponseBaseDto extends BaseResponseDto {
   name: string;
-
   description: string;
-
   price: number;
-
   cost: number;
-
   images: string[];
-
-  category: CategoryDto;
 }
 
-export class UpdateItemDto {
+export class ItemRequestBaseDto extends BaseRequestDto {
+  name: string;
+  description: string;
+  price: number;
+  cost: number;
+  images: string[];
+  details: string;
+  categoriesId: string[];
+}
+
+export class ItemDetailResponseDto extends ItemResponseBaseDto {
+  details: string;
+  categories: CategoryDto[];
+  available: boolean;
+  stock: number;
+  quantity: number;
+}
+
+export class ListItemResponseDto extends ItemResponseBaseDto {}
+
+export class UpdateItemDto extends ItemRequestBaseDto {
   id: string;
-
-  name: string;
-
-  description: string;
-
-  price: number;
-
-  cost: number;
-
-  images: string[];
-
-  category: string;
 }
 
-export class UpdateItemResponseDto extends BaseResponseDto {}
+export class UpdateItemResponseDto extends BaseResponse {}
 
-export class CreateItemDto {
-  name: string;
-
-  description: string;
-
-  price: number;
-
-  cost: number;
-
-  images: string[];
-
-  categoryId: string;
-}
+export class CreateItemDto extends ItemRequestBaseDto {}

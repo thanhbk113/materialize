@@ -7,6 +7,8 @@ import {
   Post,
 } from "@nestjs/common";
 import { ApiOkResponse } from "@nestjs/swagger";
+import { BaseResponseDto } from "../../common/abstract.dto";
+import { BaseResponse, SimpleResponse } from "../../common/dto/page.dto";
 
 import { AuthUser } from "../../decorators";
 import { UserDto } from "../user/dtos/user.dto";
@@ -30,31 +32,33 @@ export class AuthController {
     type: LoginPayloadDto,
     description: "User info with access token",
   })
-  async login(@Body() userLoginDto: UserLoginDto): Promise<LoginPayloadDto> {
+  async login(
+    @Body() userLoginDto: UserLoginDto,
+  ): Promise<SimpleResponse<LoginPayloadDto>> {
     const userEntity = await this.authService.login(userLoginDto);
 
     const token = await this.authService.generateAuthToken(userEntity);
-    return new LoginPayloadDto(userEntity.toDto(), token);
+    return new SimpleResponse(
+      new LoginPayloadDto(userEntity.toDto(), token),
+      "User logged in successfully",
+    );
   }
 
   @Post("register")
   @HttpCode(HttpStatus.OK)
-  async register(@Body() userRegisterDto: UserRegisterDto): Promise<UserDto> {
-    const createdUser = await this.userService.createUser(userRegisterDto);
+  async register(
+    @Body() userRegisterDto: UserRegisterDto,
+  ): Promise<SimpleResponse<void>> {
+    await this.userService.createUser(userRegisterDto);
 
-    return {
-      ...createdUser,
-      isActive: true,
-    };
+    return new SimpleResponse(null, "User created successfully");
   }
 
   @Get("/me")
   @HttpCode(HttpStatus.OK)
   // @Auth([RoleType.USER, RoleType.ADMIN])
   @ApiOkResponse({ type: UserDto, description: "current user info" })
-  getCurrentUser(@AuthUser() user: UserEntity): UserDto {
-    return {
-      ...user,
-    };
+  getCurrentUser(@AuthUser() user: UserEntity): SimpleResponse<UserDto> {
+    return new SimpleResponse(user.toDto(), "User info");
   }
 }

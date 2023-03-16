@@ -6,6 +6,7 @@ import {
   BeforeInsert,
   JoinColumn,
   ManyToOne,
+  ManyToMany,
 } from "typeorm";
 import { BaseEntity } from "../../common/abstract.entity";
 import { CategoryStatus } from "../../common/enum/category-status";
@@ -29,7 +30,7 @@ export class CategoryEntity extends BaseEntity {
   @JoinColumn({ name: "parentId" })
   children?: CategoryEntity[];
 
-  @OneToMany(() => ItemEntity, item => item.category)
+  @ManyToMany(() => ItemEntity, item => item.categories)
   items?: ItemEntity[];
 
   @Column()

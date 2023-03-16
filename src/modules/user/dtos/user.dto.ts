@@ -1,6 +1,7 @@
-import { BaseDto } from "../../../common/abstract.dto";
+import { Exclude } from "class-transformer";
+import { BaseResponseDto } from "../../../common/abstract.dto";
 
-export class UserDto extends BaseDto {
+export class UserDto extends BaseResponseDto {
   firstName?: string;
 
   lastName?: string;

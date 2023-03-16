@@ -6,17 +6,10 @@ import {
   Logger,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { plainToClass } from "class-transformer";
-import type { FindOptionsWhere } from "typeorm";
 import { Repository } from "typeorm";
-import { PageDto } from "../../common/dto/page.dto";
 // import { ValidatorService } from '../../shared/services/validator.service';
-import type { AddToCartDto, CartDto } from "./dtos/cart.dto";
+import type { AddToCartDto } from "./dtos/cart.dto";
 import { CartEntity } from "./cart.entity";
-import { queryPagination } from "../../common/utils";
-import { PageMetaDto } from "../../common/dto/page-meta.dto";
-import { CustomHttpException } from "../../common/exception/custom-http.exception";
-import { StatusCodesList } from "../../common/constants/status-codes-list.constants";
 import { CartItemEntity } from "./cart-item.entity";
 
 @Injectable()

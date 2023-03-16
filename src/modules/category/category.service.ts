@@ -19,6 +19,7 @@ import { Logger } from "winston";
 import { CategoryEntity } from "./category.entity";
 import { PageDto } from "../../common/dto/page.dto";
 import { PageMetaDto } from "../../common/dto/page-meta.dto";
+import { CustomHttpException } from "../../common/exception/custom-http.exception";
 
 @Injectable()
 export class CategoryService {
@@ -53,5 +54,13 @@ export class CategoryService {
       throw new BadRequestException(`Category with id ${id} not found`);
     }
     return this.catRepository.findOne({ where: { id } });
+  }
+
+  async deleteCategory(id: string) {
+    const { affected } = await this.catRepository.delete(id);
+    if (affected === 0) {
+      // TODO: throw custom exception
+      // throw new CustomHttpException({});
+    }
   }
 }

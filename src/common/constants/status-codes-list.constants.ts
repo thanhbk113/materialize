@@ -20,4 +20,6 @@ export const StatusCodesList = {
   RefreshTokenExpired: 1019,
   EmailOrPasswordIncorrect: 1020,
   EmailAlreadyExists: 1021,
+  CategoryAlreadyExists: 1022,
+  CategoryNotFound: 1023,
 } as const;

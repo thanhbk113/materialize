@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Post,
   Put,
@@ -11,7 +12,8 @@ import { PageOptionsDto } from "../../common/dto/page-options.dto";
 import { PageDto } from "../../common/dto/page.dto";
 import {
   CreateItemDto,
-  ItemDto,
+  ItemDetailResponseDto,
+  ListItemResponseDto,
   UpdateItemDto,
   UpdateItemResponseDto,
 } from "./dtos/item.dto";
@@ -25,13 +27,32 @@ export class ItemController {
   async search(
     @Query(new ValidationPipe({ transform: true }))
     pageOptions: PageOptionsDto,
-  ): Promise<PageDto<ItemDto>> {
+  ): Promise<PageDto<ListItemResponseDto>> {
     return await this.itemService.search(pageOptions);
   }
 
+  @Get("/suggest")
+  async suggest(
+    @Query("keyword") keyword: string,
+  ): Promise<ListItemResponseDto[]> {
+    return await this.itemService.suggest(keyword);
+  }
+
   @Post("/create")
-  async create(@Body() createItemDto: CreateItemDto): Promise<ItemDto> {
+  async create(
+    @Body() createItemDto: CreateItemDto,
+  ): Promise<ItemDetailResponseDto> {
     return await this.itemService.create(createItemDto);
+  }
+
+  @Get("/:id")
+  async get(@Query("id") id: string): Promise<ItemDetailResponseDto> {
+    return await this.itemService.getOneItemById(id);
+  }
+
+  @Delete("/:id")
+  async delete(@Query("id") id: string): Promise<void> {
+    return await this.itemService.deleteOneItemById(id);
   }
 
   @Put("/update")

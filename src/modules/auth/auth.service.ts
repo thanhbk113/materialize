@@ -69,7 +69,7 @@ export class AuthService {
   //   return this.tokenRepo.save(tokenDoc);
   // }
 
-  generateToken(userId: string, type: string, expiresIn: number) {
+  generateToken(userId: string, type: string, expiresIn: number | string) {
     const payload = { sub: userId, type };
     return this.jwtService.sign(payload, {
       expiresIn: expiresIn,

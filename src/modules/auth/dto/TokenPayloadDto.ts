@@ -1,8 +1,8 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from "@nestjs/swagger";
 
 export class TokenPayloadDto {
   @ApiProperty()
-  expiresIn: number;
+  expiresIn: number | string;
 
   @ApiProperty()
   access_token: string;

@@ -67,6 +67,7 @@ export class ApiConfigService {
       username: this.getString("DB_USERNAME"),
       password: this.getString("DB_PASSWORD"),
       database: this.getString("DB_DATABASE"),
+      ssl: true,
       // migrationsRun: true,
       logging: this.getBoolean("ENABLE_ORM_LOGS"),
     };
@@ -93,8 +94,8 @@ export class ApiConfigService {
       privateKey: this.getString("JWT_PRIVATE_KEY"),
       publicKey: this.getString("JWT_PUBLIC_KEY"),
       jwtSecret: this.getString("JWT_SECRET"),
-      jwtRefreshExpirationTime: this.getNumber("JWT_REFRESH_EXPIRATION_TIME"),
-      jwtAccessExpirationTime: this.getNumber("JWT_ACCESS_EXPIRATION_TIME"),
+      jwtRefreshExpirationTime: this.getString("JWT_REFRESH_EXPIRATION_TIME"),
+      jwtAccessExpirationTime: this.getString("JWT_ACCESS_EXPIRATION_TIME"),
     };
   }
 
