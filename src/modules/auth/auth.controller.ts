@@ -23,7 +23,7 @@ export class AuthController {
   ): Promise<SimpleResponse<LoginPayloadDto>> {
     const userEntity = await this.authService.login(userLoginDto);
 
-    const token = await this.authService.generateAuthToken(userEntity);
+    const token = await this.authService.generateAuthToken(userEntity.id);
     return new SimpleResponse(
       new LoginPayloadDto(userEntity.toDto(), token),
       "User logged in successfully",
@@ -45,5 +45,12 @@ export class AuthController {
     @AuthUser() user: UserEntity,
   ): Promise<SimpleResponse<UserDto>> {
     return new SimpleResponse(user.toDto(), "User info");
+  }
+
+  @Post("/refresh-token")
+  async refreshToken(@Body("refresh_token") refresh_token: string) {
+    const payload = await this.authService.verifyRefreshToken(refresh_token);
+    const token = await this.authService.generateAuthToken(payload.sub);
+    return new SimpleResponse(token, "Refresh token successfully");
   }
 }

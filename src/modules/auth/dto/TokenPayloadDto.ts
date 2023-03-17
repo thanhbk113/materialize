@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
+import { TokenType } from "../../../common/constants/token-type";
 
-export class TokenPayloadDto {
+export class AuthTokenPayloadDto {
   @ApiProperty()
   expiresIn: number | string;
 
@@ -19,4 +20,11 @@ export class TokenPayloadDto {
     this.access_token = data.accessToken;
     this.refresh_token = data.refreshToken;
   }
+}
+
+export class TokenPayloadDto {
+  sub: string;
+  type: TokenType;
+  iat: number;
+  exp: number;
 }

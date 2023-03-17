@@ -21,5 +21,5 @@ export const ExceptionTitleList = {
   EmailOrPasswordIncorrect: "EmailOrPasswordIncorrect",
   EmailAlreadyExists: "EmailAlreadyExists",
   CategoryAlreadyExists: "CategoryAlreadyExists",
-  CategoryNotFound: "CategoryNotFound",
+  CategoryNotFound: "CategoryNotFound"
 };

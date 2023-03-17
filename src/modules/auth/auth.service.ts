@@ -10,7 +10,7 @@ import { ApiConfigService } from "../../shared/services/api-config.service";
 
 import type { UserEntity } from "../user/user.entity";
 import { UserService } from "../user/user.service";
-import { TokenPayloadDto } from "./dto/TokenPayloadDto";
+import { AuthTokenPayloadDto, TokenPayloadDto } from "./dto/TokenPayloadDto";
 import type { UserLoginDto } from "./dto/UserLoginDto";
 
 @Injectable()
@@ -32,17 +32,17 @@ export class AuthService {
   //   });
   // }
 
-  async generateAuthToken(user: UserEntity): Promise<TokenPayloadDto> {
+  async generateAuthToken(user_id: string): Promise<AuthTokenPayloadDto> {
     const access_token = this.generateToken(
-      user.id,
+      user_id,
       TokenType.ACCESS_TOKEN,
       this.configService.authConfig.jwtAccessExpirationTime,
     );
 
     const refresh_token = this.generateToken(
-      user.id,
+      user_id,
       TokenType.REFRESH_TOKEN,
-      0,
+      this.configService.authConfig.jwtRefreshExpirationTime,
     );
     // await this.saveToken(refresh_token, user, TokenType.RefreshToken);
     return {
@@ -108,5 +108,35 @@ export class AuthService {
         message: error.message,
       });
     }
+  }
+
+  async verifyToken(token: string): Promise<TokenPayloadDto> {
+    try {
+      const payload = await this.jwtService.verifyAsync<TokenPayloadDto>(
+        token,
+        {
+          secret: this.configService.authConfig.jwtSecret,
+        },
+      );
+      return payload;
+    } catch (error) {
+      throw new CustomHttpException({
+        statusCode: HttpStatus.UNAUTHORIZED,
+        code: StatusCodesList.InvalidToken,
+        message: error.message,
+      });
+    }
+  }
+
+  async verifyRefreshToken(token: string): Promise<TokenPayloadDto> {
+    const payload = await this.verifyToken(token);
+    if (payload.type !== TokenType.REFRESH_TOKEN) {
+      throw new CustomHttpException({
+        statusCode: HttpStatus.UNAUTHORIZED,
+        code: StatusCodesList.InvalidRefreshToken,
+        message: "Invalid refresh token",
+      });
+    }
+    return payload;
   }
 }

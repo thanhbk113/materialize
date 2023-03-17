@@ -1,14 +1,14 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from "@nestjs/swagger";
 
-import { UserDto } from '../../user/dtos/user.dto';
-import { TokenPayloadDto } from './TokenPayloadDto';
+import { UserDto } from "../../user/dtos/user.dto";
+import { AuthTokenPayloadDto } from "./TokenPayloadDto";
 
 export class LoginPayloadDto {
   user: UserDto;
 
-  token: TokenPayloadDto;
+  token: AuthTokenPayloadDto;
 
-  constructor(user: UserDto, token: TokenPayloadDto) {
+  constructor(user: UserDto, token: AuthTokenPayloadDto) {
     this.user = user;
     this.token = token;
   }

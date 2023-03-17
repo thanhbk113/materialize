@@ -22,4 +22,5 @@ export const StatusCodesList = {
   EmailAlreadyExists: 1021,
   CategoryAlreadyExists: 1022,
   CategoryNotFound: 1023,
+  InvalidToken: 1024,
 } as const;
