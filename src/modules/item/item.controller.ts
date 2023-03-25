@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   Post,
   Put,
   Query,
@@ -46,12 +47,12 @@ export class ItemController {
   }
 
   @Get("/:id")
-  async get(@Query("id") id: string): Promise<ItemDetailResponseDto> {
+  async get(@Param("id") id: string): Promise<ItemDetailResponseDto> {
     return await this.itemService.getOneItemById(id);
   }
 
   @Delete("/:id")
-  async delete(@Query("id") id: string): Promise<void> {
+  async delete(@Param("id") id: string): Promise<void> {
     return await this.itemService.deleteOneItemById(id);
   }
 
