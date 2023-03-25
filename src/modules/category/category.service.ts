@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  HttpStatus,
   Inject,
   Injectable,
   InternalServerErrorException,
@@ -20,6 +21,7 @@ import { CategoryEntity } from "./category.entity";
 import { PageDto } from "../../common/dto/page.dto";
 import { PageMetaDto } from "../../common/dto/page-meta.dto";
 import { CustomHttpException } from "../../common/exception/custom-http.exception";
+import { StatusCodesList } from "../../common/constants/status-codes-list.constants";
 
 @Injectable()
 export class CategoryService {
@@ -59,8 +61,11 @@ export class CategoryService {
   async deleteCategory(id: string) {
     const { affected } = await this.catRepository.delete(id);
     if (affected === 0) {
-      // TODO: throw custom exception
-      // throw new CustomHttpException({});
+      throw new CustomHttpException({
+        code: StatusCodesList.CategoryNotFound,
+        message: "",
+        statusCode: HttpStatus.NOT_FOUND,
+      });
     }
   }
 }

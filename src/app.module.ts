@@ -15,6 +15,7 @@ import { CategoryModule } from "./modules/category/category.module";
 import { HealthModule } from "./modules/health/health.module";
 import { ItemModule } from "./modules/item/item.module";
 import { CartModule } from "./modules/cart/cart.module";
+import { UploadModule } from "./modules/upload/upload.module";
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { CartModule } from "./modules/cart/cart.module";
     CartModule,
     CategoryModule,
     HealthModule,
+    UploadModule,
   ],
   // providers: [
   //   {
