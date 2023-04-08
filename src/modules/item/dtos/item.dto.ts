@@ -20,8 +20,6 @@ export class WriteItemRequestBaseDto extends BaseRequestDto {
   cost: number;
   images: string[];
   details: string;
-
-  @Transform(({ value }) => (typeof value === "string" ? [value] : value))
   categoriesId: string[];
 }
 
