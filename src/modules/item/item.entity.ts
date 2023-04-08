@@ -30,7 +30,9 @@ export class ItemEntity extends BaseEntity {
   images: string[];
 
   @ManyToMany(() => CategoryEntity, category => category.items)
-  @JoinTable()
+  @JoinTable({
+    name: "item_categories",
+  })
   categories: CategoryEntity[];
 
   @Column({ default: 0 })

@@ -15,10 +15,12 @@ import {
   CreateItemDto,
   ItemDetailResponseDto,
   ListItemResponseDto,
+  SearchItemRequestDto,
   UpdateItemDto,
   UpdateItemResponseDto,
 } from "./dtos/item.dto";
 import { ItemService } from "./item.service";
+import { PageMetaDto } from "../../common/dto/page-meta.dto";
 
 @Controller("item")
 export class ItemController {
@@ -27,9 +29,16 @@ export class ItemController {
   @Get("/search")
   async search(
     @Query(new ValidationPipe({ transform: true }))
-    pageOptions: PageOptionsDto,
+    request: SearchItemRequestDto,
   ): Promise<PageDto<ListItemResponseDto>> {
-    return await this.itemService.search(pageOptions);
+    const [items, itemCount] = await this.itemService.search(request);
+    return new PageDto<ListItemResponseDto>(
+      items,
+      new PageMetaDto({
+        itemCount,
+        pageOptionsDto: request,
+      }),
+    );
   }
 
   @Get("/suggest")

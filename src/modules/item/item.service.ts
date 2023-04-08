@@ -1,6 +1,11 @@
-import { Injectable, Logger } from "@nestjs/common";
+import {
+  BadRequestException,
+  HttpStatus,
+  Injectable,
+  Logger,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import { PageMetaDto } from "../../common/dto/page-meta.dto";
 import { PageOptionsDto } from "../../common/dto/page-options.dto";
 import { PageDto } from "../../common/dto/page.dto";
@@ -9,14 +14,19 @@ import {
   CreateItemDto,
   ItemDetailResponseDto,
   ListItemResponseDto,
+  SearchItemRequestDto,
   UpdateItemDto,
   UpdateItemResponseDto,
 } from "./dtos/item.dto";
 
 import { ItemEntity } from "./item.entity";
+import { CategoryEntity } from "../category/category.entity";
+import { log } from "console";
+import { CustomHttpException } from "../../common/exception/custom-http.exception";
+import { StatusCodesList } from "../../common/constants/status-codes-list.constants";
 
 interface ItemServiceInterface {
-  search(pageOptionsDto: PageOptionsDto): Promise<PageDto<ListItemResponseDto>>;
+  search(request: SearchItemRequestDto): Promise<[ItemEntity[], number]>;
   create(itemDto: CreateItemDto): Promise<ItemDetailResponseDto>;
   update(updateItemDto: UpdateItemDto): Promise<UpdateItemResponseDto>;
   getOneItemById(id: string): Promise<ItemDetailResponseDto>;
@@ -30,25 +40,24 @@ export class ItemService implements ItemServiceInterface {
   constructor(
     @InjectRepository(ItemEntity)
     private itemRepository: Repository<ItemEntity>,
+    @InjectRepository(CategoryEntity)
+    private categoryRepository: Repository<CategoryEntity>,
   ) {}
 
-  async search(
-    pageOptionsDto: PageOptionsDto,
-  ): Promise<PageDto<ListItemResponseDto>> {
+  async search(request: SearchItemRequestDto): Promise<[ItemEntity[], number]> {
     const qb = this.itemRepository.createQueryBuilder("item");
 
-    const [items, itemCount] = await queryPagination<ItemEntity>({
-      query: qb,
-      o: pageOptionsDto,
-    });
+    if (request.cates_slug?.length > 0) {
+      qb.innerJoinAndSelect("item.categories", "category");
+      qb.andWhere("category.slug IN (:...cates_slug)", {
+        cates_slug: request.cates_slug,
+      });
+    }
 
-    return new PageDto<ListItemResponseDto>(
-      items,
-      new PageMetaDto({
-        itemCount,
-        pageOptionsDto,
-      }),
-    );
+    return await queryPagination<ItemEntity>({
+      query: qb,
+      o: request,
+    });
   }
 
   async create(itemDto: CreateItemDto): Promise<ItemDetailResponseDto> {
@@ -63,8 +72,20 @@ export class ItemService implements ItemServiceInterface {
       }
     }
 
+    const cats = await this.categoryRepository.find({
+      where: { id: In(itemDto.categoriesId) },
+    });
+
+    if (cats.length !== itemDto.categoriesId.length) {
+      throw new CustomHttpException({
+        statusCode: HttpStatus.BAD_REQUEST,
+        code: StatusCodesList.CategoryNotFound,
+      });
+    }
+
     const item = this.itemRepository.create({
       ...itemDto,
+      categories: cats,
       sku: sku,
     });
 

@@ -23,4 +23,5 @@ export const StatusCodesList = {
   CategoryAlreadyExists: 1022,
   CategoryNotFound: 1023,
   InvalidToken: 1024,
+  InvalidRequest: 1025,
 } as const;

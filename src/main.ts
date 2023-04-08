@@ -19,6 +19,8 @@ async function bootstrap() {
   // patchTypeORMRepositoryWithBaseRepository();
 
   const app = await NestFactory.create(AppModule, { cors: true });
+  const configService = app.select(SharedModule).get(ApiConfigService);
+
   app.use(helmet());
   app.setGlobalPrefix("/api");
 
@@ -33,7 +35,7 @@ async function bootstrap() {
 
   app.useGlobalInterceptors(
     new ClassSerializerInterceptor(app.get(Reflector)),
-    new HTTPLogger(),
+    configService.isLogRequest && new HTTPLogger(),
   );
 
   app.useGlobalPipes(
@@ -44,8 +46,6 @@ async function bootstrap() {
       exceptionFactory: errors => new UnprocessableEntityException(errors),
     }),
   );
-
-  const configService = app.select(SharedModule).get(ApiConfigService);
 
   const port = configService.appConfig.port;
 

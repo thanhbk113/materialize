@@ -4,9 +4,10 @@ import {
   StringField,
   StringFieldOptional,
 } from "../../decorators";
+import { BaseRequestDto } from "../abstract.dto";
 import { OrderType } from "../enum/order";
 
-export class PageOptionsDto {
+export class PageOptionsDto extends BaseRequestDto {
   readonly sort?: string = "created_at";
 
   @EnumFieldOptional(() => OrderType, {

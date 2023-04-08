@@ -11,6 +11,10 @@ export class ApiConfigService {
     return this.nodeEnv === "development";
   }
 
+  get isLogRequest(): boolean {
+    return this.getBoolean("LOG_REQUEST");
+  }
+
   get isProduction(): boolean {
     return this.nodeEnv === "production";
   }

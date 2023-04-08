@@ -7,7 +7,7 @@ export interface BaseHttpResponse {
   code: number;
   data?: any;
   timestamp?: Date;
-  message: string;
+  message?: string;
   path?: string;
 }
 
