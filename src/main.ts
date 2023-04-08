@@ -5,7 +5,7 @@ import {
   ValidationPipe,
 } from "@nestjs/common";
 import { NestFactory, Reflector } from "@nestjs/core";
-import helmet from "helmet";
+import * as helmet from "helmet";
 import rateLimit from "express-rate-limit";
 import * as compression from "compression";
 
@@ -21,7 +21,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
   const configService = app.select(SharedModule).get(ApiConfigService);
 
-  app.use(helmet());
+  app.use(helmet.default());
   app.setGlobalPrefix("/api");
 
   app.use(
