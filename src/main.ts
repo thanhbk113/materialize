@@ -21,7 +21,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
   const configService = app.select(SharedModule).get(ApiConfigService);
 
-  app.use(helmet.default());
+  // app.use(helmet.default());
   app.setGlobalPrefix("/api");
 
   app.use(
