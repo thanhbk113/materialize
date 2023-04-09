@@ -6,3 +6,7 @@ export class ItemAddToCartDto {
   itemId: string;
   quantity: number;
 }
+
+export class DeleteCartItemRequestDto {
+  itemsId: string[];
+}

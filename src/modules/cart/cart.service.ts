@@ -11,6 +11,9 @@ import { Repository } from "typeorm";
 import type { AddToCartDto } from "./dtos/cart.dto";
 import { CartEntity } from "./cart.entity";
 import { CartItemEntity } from "./cart-item.entity";
+import { ItemEntity } from "../item/item.entity";
+import { CustomHttpException } from "../../common/exception/custom-http.exception";
+import { StatusCodesList } from "../../common/constants/status-codes-list.constants";
 
 @Injectable()
 export class CartService {
@@ -20,10 +23,15 @@ export class CartService {
     private cartRepository: Repository<CartEntity>,
     @InjectRepository(CartItemEntity)
     private cartItemRepository: Repository<CartItemEntity>,
+    @InjectRepository(ItemEntity)
+    private itemRepo: Repository<ItemEntity>,
   ) {}
 
   findCartById(cartId: string): Promise<CartEntity> {
-    return this.cartRepository.findOne({ where: { id: cartId } });
+    return this.cartRepository.findOne({
+      where: { id: cartId },
+      relations: ["cart_items", "cart_items.item"],
+    });
   }
 
   async addToCart(
@@ -31,20 +39,45 @@ export class CartService {
     addToCartDto: AddToCartDto,
   ): Promise<CartEntity> {
     let cart = await this.findCartById(cartId);
-    let cartItems = addToCartDto.items.map(item => {
-      return this.cartItemRepository.save({
-        cart,
-        quantity: item.quantity,
-        item: { id: item.itemId },
-      });
+
+    const cartItems = addToCartDto.items.map(i => {
+      return {
+        cartId: cart.id,
+        item: { id: i.itemId },
+        quantity: i.quantity,
+      };
     });
 
-    await Promise.all(cartItems);
-
+    const savedCartItems = await this.cartItemRepository.save(cartItems);
+    if (!cart.cart_items) {
+      cart.cart_items = [];
+    }
+    cart.cart_items.push(...savedCartItems);
+    cart = await this.cartRepository.save(cart);
     return cart;
   }
 
   async createCart(): Promise<CartEntity> {
     return this.cartRepository.save({});
+  }
+
+  async deleteCartItem(cartId: string, itemsId: string[]): Promise<CartEntity> {
+    const cart = await this.findCartById(cartId);
+    if (!cart) {
+      throw new CustomHttpException({
+        statusCode: HttpStatus.NOT_FOUND,
+        code: StatusCodesList.NotFound,
+      });
+    }
+
+    const items = await this.cartItemRepository.findByIds(itemsId);
+    if (items.length !== itemsId.length) {
+      throw new CustomHttpException({
+        statusCode: HttpStatus.NOT_FOUND,
+        code: StatusCodesList.NotFound,
+      });
+    }
+    await this.cartItemRepository.remove(items);
+    return this.findCartById(cartId);
   }
 }

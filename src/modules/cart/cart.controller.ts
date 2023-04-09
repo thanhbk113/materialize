@@ -1,23 +1,39 @@
-import { Body, Controller, Get, Post, Req } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Post,
+  Req,
+  Request,
+} from "@nestjs/common";
 import { Auth } from "../../decorators";
 import { CartService } from "./cart.service";
-import { AddToCartDto } from "./dtos/cart.dto";
+import { AddToCartDto, DeleteCartItemRequestDto } from "./dtos/cart.dto";
+import { SimpleResponse } from "../../common/dto/page.dto";
 
 @Controller("cart")
 export class CartController {
-  constructor(private CartService: CartService) {}
+  constructor(private cartService: CartService) {}
 
   @Get("/")
   @Auth()
   async findUserCart(@Req() req) {
-    return this.CartService.findCartById(req.user.id);
+    const data = await this.cartService.findCartById(req.user.cartId);
+    return new SimpleResponse(data);
   }
 
   @Post("/add")
   @Auth()
-  async addToCart(@Req() req, @Body() addToCartDto: AddToCartDto) {
-    console.log(req.user);
+  async addToCart(@Request() req, @Body() addToCartDto: AddToCartDto) {
+    await this.cartService.addToCart(req.user.cartId, addToCartDto);
+    return new SimpleResponse(null);
+  }
 
-    return this.CartService.addToCart(req.user, addToCartDto);
+  @Delete("/delete-cart-item")
+  @Auth()
+  async deleteCartItem(@Request() req, @Body() body: DeleteCartItemRequestDto) {
+    await this.cartService.deleteCartItem(req.user.cartId, body.itemsId);
+    return new SimpleResponse(null);
   }
 }

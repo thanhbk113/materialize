@@ -4,14 +4,17 @@ import { ExtractJwt, Strategy } from "passport-jwt";
 
 import { TokenType } from "../../common/constants/token-type";
 import { ApiConfigService } from "../../shared/services/api-config.service";
-import type { UserEntity } from "../user/user.entity";
+import { UserEntity } from "../user/user.entity";
 import { UserService } from "../user/user.service";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     private configService: ApiConfigService,
-    private userService: UserService,
+    @InjectRepository(UserEntity)
+    private userRepo: Repository<UserEntity>,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -27,14 +30,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException();
     }
 
-    const user = await this.userService.findOne({
-      id: args.userId,
+    const user = await this.userRepo.findOne({
+      where: { id: args.userId },
     });
 
     if (!user) {
       throw new UnauthorizedException();
     }
-
     return user;
   }
 }

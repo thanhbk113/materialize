@@ -4,10 +4,12 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   OneToOne,
 } from "typeorm";
 import { BaseEntity } from "../../common/abstract.entity";
 import { CategoryEntity } from "../category/category.entity";
+import { CartItemEntity } from "../cart/cart-item.entity";
 
 @Entity({ name: "items" })
 export class ItemEntity extends BaseEntity {
@@ -42,6 +44,9 @@ export class ItemEntity extends BaseEntity {
     },
   })
   categories: CategoryEntity[];
+
+  @OneToMany(() => CartItemEntity, cartItem => cartItem.item)
+  cartItem: CartItemEntity[];
 
   @Column({ default: 0 })
   stock: number;

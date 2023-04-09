@@ -40,6 +40,9 @@ export class UserEntity extends BaseEntity {
   @JoinColumn({ name: "cart_id" })
   cart: CartEntity;
 
+  @Column({ name: "cart_id" })
+  cartId: string;
+
   @BeforeInsert()
   hashPassword() {
     this.password = generateHash(this.password);
