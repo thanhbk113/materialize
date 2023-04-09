@@ -1,11 +1,12 @@
 import { Exclude } from "class-transformer";
-import { Column, Entity, OneToOne, BeforeInsert } from "typeorm";
+import { Column, Entity, OneToOne, BeforeInsert, JoinColumn } from "typeorm";
 import { BaseEntity } from "../../common/abstract.entity";
 import { UserRole } from "../../common/enum/user-role";
 import { generateHash } from "../../common/utils";
 import { VirtualColumn } from "../../decorators";
 import { UserDto } from "./dtos/user.dto";
 import { UserSettingsEntity } from "./user-settings.entity";
+import { CartEntity } from "../cart/cart.entity";
 
 @Entity({ name: "users" })
 export class UserEntity extends BaseEntity {
@@ -34,6 +35,10 @@ export class UserEntity extends BaseEntity {
 
   @OneToOne(() => UserSettingsEntity, userSettings => userSettings.user)
   settings?: UserSettingsEntity;
+
+  @OneToOne(() => CartEntity)
+  @JoinColumn({ name: "cart_id" })
+  cart: CartEntity;
 
   @BeforeInsert()
   hashPassword() {

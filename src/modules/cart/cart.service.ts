@@ -22,23 +22,19 @@ export class CartService {
     private cartItemRepository: Repository<CartItemEntity>,
   ) {}
 
-  findUserCart(userId: string): Promise<CartEntity> {
-    return this.cartRepository.findOne({ where: { userId } });
+  findCartById(cartId: string): Promise<CartEntity> {
+    return this.cartRepository.findOne({ where: { id: cartId } });
   }
 
   async addToCart(
-    userId: string,
+    cartId: string,
     addToCartDto: AddToCartDto,
   ): Promise<CartEntity> {
-    let cart = await this.cartRepository.findOne({ where: { userId } });
-    if (!cart) {
-      cart = await this.cartRepository.save({ userId });
-    }
+    let cart = await this.findCartById(cartId);
     let cartItems = addToCartDto.items.map(item => {
       return this.cartItemRepository.save({
         cart,
         quantity: item.quantity,
-        userId,
         item: { id: item.itemId },
       });
     });

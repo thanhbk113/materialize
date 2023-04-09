@@ -10,12 +10,14 @@ export class CartController {
   @Get("/")
   @Auth()
   async findUserCart(@Req() req) {
-    return this.CartService.findUserCart(req.user.id);
+    return this.CartService.findCartById(req.user.id);
   }
 
   @Post("/add")
   @Auth()
   async addToCart(@Req() req, @Body() addToCartDto: AddToCartDto) {
-    return this.CartService.addToCart(req.user.id, addToCartDto);
+    console.log(req.user);
+
+    return this.CartService.addToCart(req.user, addToCartDto);
   }
 }

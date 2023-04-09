@@ -26,6 +26,7 @@ import { WINSTON_MODULE_PROVIDER } from "nest-winston";
 import { CustomHttpException } from "../../common/exception/custom-http.exception";
 import { StatusCodesList } from "../../common/constants/status-codes-list.constants";
 import { UserRole } from "../../common/enum/user-role";
+import { CartEntity } from "../cart/cart.entity";
 
 @Injectable()
 export class UserService {
@@ -35,6 +36,8 @@ export class UserService {
     private userSettingRepository: Repository<UserSettingsEntity>,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>, // private validatorService: ValidatorService,
+    @InjectRepository(CartEntity)
+    private cartRepository: Repository<CartEntity>,
   ) {}
 
   findOne(findData: FindOptionsWhere<UserEntity>): Promise<UserEntity | null> {
@@ -79,6 +82,9 @@ export class UserService {
         code: StatusCodesList.EmailAlreadyExists,
       });
     }
+
+    const userCart = this.cartRepository.create();
+    await this.cartRepository.save(userCart);
 
     const user = this.userRepository.create(userRegisterDto);
 
