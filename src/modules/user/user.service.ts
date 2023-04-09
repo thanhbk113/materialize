@@ -6,38 +6,32 @@ import {
   Logger,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { plainToClass } from "class-transformer";
 import type { FindOptionsWhere } from "typeorm";
 import { Repository } from "typeorm";
-import { Transactional } from "typeorm-transactional-cls-hooked";
 
 import { PageDto } from "../../common/dto/page.dto";
-import { IFile } from "../../common/interfaces/file.interface";
 // import { ValidatorService } from '../../shared/services/validator.service';
 import { UserRegisterDto } from "../auth/dto/UserRegisterDto";
-import { CreateSettingsDto } from "./dtos/create-settings.dto";
 import type { UserDto } from "./dtos/user.dto";
 import type { UsersPageOptionsDto } from "./dtos/users-page-options.dto";
 import { UserEntity } from "./user.entity";
 import { UserSettingsEntity } from "./user-settings.entity";
 import { queryPagination } from "../../common/utils";
 import { PageMetaDto } from "../../common/dto/page-meta.dto";
-import { WINSTON_MODULE_PROVIDER } from "nest-winston";
 import { CustomHttpException } from "../../common/exception/custom-http.exception";
 import { StatusCodesList } from "../../common/constants/status-codes-list.constants";
 import { UserRole } from "../../common/enum/user-role";
-import { CartEntity } from "../cart/cart.entity";
+import { CartService } from "../cart/cart.service";
 
 @Injectable()
 export class UserService {
   private readonly logger: Logger = new Logger(UserService.name);
   constructor(
+    private readonly cartService: CartService,
     @InjectRepository(UserSettingsEntity)
     private userSettingRepository: Repository<UserSettingsEntity>,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>, // private validatorService: ValidatorService,
-    @InjectRepository(CartEntity)
-    private cartRepository: Repository<CartEntity>,
   ) {}
 
   findOne(findData: FindOptionsWhere<UserEntity>): Promise<UserEntity | null> {
@@ -83,8 +77,7 @@ export class UserService {
       });
     }
 
-    const userCart = this.cartRepository.create();
-    await this.cartRepository.save(userCart);
+    const userCart = this.cartService.createCart();
 
     const user = this.userRepository.create(userRegisterDto);
 

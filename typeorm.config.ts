@@ -5,7 +5,6 @@ import { config } from "dotenv";
 config();
 
 const configService = new ConfigService();
-console.log(__dirname + "/../../database/migrations/*{.ts,.js}");
 
 export default new DataSource({
   type: "postgres",

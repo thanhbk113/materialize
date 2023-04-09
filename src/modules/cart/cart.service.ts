@@ -43,4 +43,8 @@ export class CartService {
 
     return cart;
   }
+
+  async createCart(): Promise<CartEntity> {
+    return this.cartRepository.save({});
+  }
 }
