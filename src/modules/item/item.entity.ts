@@ -31,7 +31,15 @@ export class ItemEntity extends BaseEntity {
 
   @ManyToMany(() => CategoryEntity, category => category.items)
   @JoinTable({
-    name: "item_categories",
+    name: "items_categories",
+    inverseJoinColumn: {
+      name: "category_id",
+      referencedColumnName: "id",
+    },
+    joinColumn: {
+      name: "item_id",
+      referencedColumnName: "id",
+    },
   })
   categories: CategoryEntity[];
 
