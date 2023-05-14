@@ -77,9 +77,10 @@ export class UserService {
       });
     }
 
-    const userCart = this.cartService.createCart();
+    const userCart = await this.cartService.createCart();
 
     const user = this.userRepository.create(userRegisterDto);
+    user.cart = userCart;
 
     const userRecord = await this.userRepository.save(user);
     // if (file && !this.validatorService.isImage(file.mimetype)) {
