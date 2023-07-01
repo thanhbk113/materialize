@@ -44,4 +44,7 @@ export class CreateItemDto extends WriteItemRequestBaseDto {}
 export class SearchItemRequestDto extends PageOptionsDto {
   @Transform(({ value }) => (typeof value === "string" ? [value] : value))
   cates_slug?: string[];
+  search: string;
+  start_price: number;
+  end_price: number;
 }

@@ -47,6 +47,17 @@ export class ItemService implements ItemServiceInterface {
   async search(request: SearchItemRequestDto): Promise<[ItemEntity[], number]> {
     const qb = this.itemRepository.createQueryBuilder("item");
 
+    if (request.search?.length > 0) {
+      qb.andWhere("item.name ILIKE :search", {
+        search: `%${request.search}%`,
+      });
+    }
+    if (request.start_price && request.end_price) {
+      qb.andWhere("item.price BETWEEN :start_price AND :end_price", {
+        start_price: request.start_price,
+        end_price: request.end_price,
+      });
+    }
     if (request.cates_slug?.length > 0) {
       qb.innerJoinAndSelect("item.categories", "category");
       qb.andWhere("category.slug IN (:...cates_slug)", {

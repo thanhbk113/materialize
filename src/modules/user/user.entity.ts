@@ -1,5 +1,12 @@
 import { Exclude } from "class-transformer";
-import { Column, Entity, OneToOne, BeforeInsert, JoinColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  OneToOne,
+  BeforeInsert,
+  JoinColumn,
+  OneToMany,
+} from "typeorm";
 import { BaseEntity } from "../../common/abstract.entity";
 import { UserRole } from "../../common/enum/user-role";
 import { generateHash } from "../../common/utils";
@@ -7,6 +14,7 @@ import { VirtualColumn } from "../../decorators";
 import { UserDto } from "./dtos/user.dto";
 import { UserSettingsEntity } from "./user-settings.entity";
 import { CartEntity } from "../cart/cart.entity";
+import { ReviewEntity } from "../review/review.entity";
 
 @Entity({ name: "users" })
 export class UserEntity extends BaseEntity {
@@ -42,6 +50,9 @@ export class UserEntity extends BaseEntity {
 
   @Column({ name: "cart_id" })
   cartId: string;
+
+  @OneToMany(() => ReviewEntity, r => r.user)
+  reviews: ReviewEntity[];
 
   @BeforeInsert()
   hashPassword() {
