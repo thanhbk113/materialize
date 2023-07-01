@@ -10,6 +10,7 @@ import {
 import { BaseEntity } from "../../common/abstract.entity";
 import { CategoryEntity } from "../category/category.entity";
 import { CartItemEntity } from "../cart/cart-item.entity";
+import { ReviewEntity } from "../review/review.entity";
 
 @Entity({ name: "items" })
 export class ItemEntity extends BaseEntity {
@@ -30,6 +31,9 @@ export class ItemEntity extends BaseEntity {
 
   @Column({ nullable: true, array: true, type: "varchar" })
   images: string[];
+
+  @OneToMany(() => ReviewEntity, reviews => reviews.item)
+  reviews: ReviewEntity[];
 
   @ManyToMany(() => CategoryEntity, category => category.items)
   @JoinTable({

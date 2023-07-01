@@ -3,10 +3,8 @@ import {
   HttpStatus,
   Inject,
   Injectable,
-  InternalServerErrorException,
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import type { FindOptionsWhere } from "typeorm";
 import { Repository } from "typeorm";
 
 import type {
@@ -31,12 +29,22 @@ export class CategoryService {
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) {}
 
-  async getCategories(): Promise<PageDto<CategoryDto>> {
-    const [categories, total] = await this.catRepository.findAndCount({
-      relations: ["children"],
+  // get categories and count items in each category
+  async getCategories(): Promise<PageDto<any>> {
+    const categories = await this.catRepository.find({ relations: ["items"] });
+
+    const categoryCounts = categories.map(category => {
+      return {
+        ...category,
+        item_count: category.items.length,
+      };
     });
-    const pageMetaDto = new PageMetaDto({ itemCount: total });
-    return new PageDto<CategoryDto>(categories, pageMetaDto);
+
+    const pageMetaDto = new PageMetaDto({
+      itemCount: categories.length,
+    });
+
+    return new PageDto<any>(categoryCounts, pageMetaDto);
   }
 
   async createParentCategory(
