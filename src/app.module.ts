@@ -17,6 +17,7 @@ import { ItemModule } from "./modules/item/item.module";
 import { CartModule } from "./modules/cart/cart.module";
 import { UploadModule } from "./modules/upload/upload.module";
 import { ReviewModule } from "./modules/review/review.module";
+import { OrderModule } from "./modules/order/order.module";
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { ReviewModule } from "./modules/review/review.module";
     HealthModule,
     UploadModule,
     ReviewModule,
+    OrderModule,
   ],
   // providers: [
   //   {
