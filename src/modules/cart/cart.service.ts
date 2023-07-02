@@ -33,26 +33,30 @@ export class CartService {
       relations: ["cart_items", "cart_items.item"],
     });
   }
-
   async addToCart(
     cartId: string,
     addToCartDto: AddToCartDto,
   ): Promise<CartEntity> {
     let cart = await this.findCartById(cartId);
 
-    const cartItems = addToCartDto.items.map(i => {
-      return {
-        cartId: cart.id,
-        item: { id: i.itemId },
-        quantity: i.quantity,
-      };
-    });
+    for (const item of addToCartDto.items) {
+      const existingCartItem = cart.cart_items.find(
+        cartItem => cartItem.item.id === item.itemId,
+      );
 
-    const savedCartItems = await this.cartItemRepository.save(cartItems);
-    if (!cart.cart_items) {
-      cart.cart_items = [];
+      if (existingCartItem) {
+        existingCartItem.quantity += item.quantity;
+        await this.cartItemRepository.save(existingCartItem);
+      } else {
+        const newCartItem = await this.cartItemRepository.save({
+          cartId: cart.id,
+          item: { id: item.itemId },
+          quantity: item.quantity,
+        });
+        cart.cart_items?.push(newCartItem);
+      }
     }
-    cart.cart_items.push(...savedCartItems);
+
     cart = await this.cartRepository.save(cart);
     return cart;
   }
