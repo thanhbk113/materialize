@@ -18,6 +18,8 @@ import { CartModule } from "./modules/cart/cart.module";
 import { UploadModule } from "./modules/upload/upload.module";
 import { ReviewModule } from "./modules/review/review.module";
 import { OrderModule } from "./modules/order/order.module";
+import { ScheduleModule } from "@nestjs/schedule";
+import { TasksService } from "./tasks/tasks.service";
 
 @Module({
   imports: [
@@ -52,6 +54,7 @@ import { OrderModule } from "./modules/order/order.module";
     UploadModule,
     ReviewModule,
     OrderModule,
+    ScheduleModule.forRoot(),
   ],
   // providers: [
   //   {
@@ -59,5 +62,6 @@ import { OrderModule } from "./modules/order/order.module";
   //     useClass: I18nExceptionFilterPipe,
   //   },
   // ],
+  providers: [TasksService],
 })
 export class AppModule {}
